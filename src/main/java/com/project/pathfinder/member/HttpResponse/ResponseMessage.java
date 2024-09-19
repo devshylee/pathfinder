@@ -15,4 +15,9 @@ public class ResponseMessage {
     public static final String MEMBER_DELETE_SUCCESS = "회원 삭제 성공";
     public static final String MEMBER_DELETE_FAIL = "회원 삭제 실패";
 
+    public static final String MEMBER_LOGIN_SUCCESS = "로그인 성공";
+    public static final String MEMBER_LOGIN_FAIL = "로그인 실패";
+
+    public static final String MEMBER_LOGOUT_SUCCESS = "로그아웃 성공";
+    public static final String MEMBER_LOGOUT_FAIL = "로그아웃 실패 : 로그인 상태가 아닙니다.";
 }
