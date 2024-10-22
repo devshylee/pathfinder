@@ -29,6 +29,9 @@ public class MemberService {
         return memberRepository.findByMemberId(memberId);
     }
 
+    public Optional<MemberEntity> getMemberByMemberNickName(String memberNickName) {
+        return memberRepository.findByMemberNickName(memberNickName);
+    }
 
     public void saveMember(MemberDTO memberDTO) {
         memberDTO.setMemberPw(passwordEncoder.encode(memberDTO.getMemberPw())); // 비밀번호 해싱

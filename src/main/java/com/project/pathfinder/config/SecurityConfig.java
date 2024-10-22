@@ -1,9 +1,8 @@
-package com.project.pathfinder.member.config;
+package com.project.pathfinder.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -14,15 +13,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().permitAll()  // 모든 API 허용
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)  // 세션을 항상 생성
-                )
-                .formLogin().disable();  // 기본 로그인 폼 비활성화
-
+                .cors() // CORS 지원 활성화
+                .and()
+                .csrf().disable() // 테스트 목적으로 CSRF 비활성화
+                .authorizeHttpRequests(authz -> authz
+                        .anyRequest().permitAll() // 모든 요청 허용
+                );
         return http.build();
     }
 

@@ -1,12 +1,13 @@
-package com.project.pathfinder.board.controller;
+package com.project.pathfinder.board.controller.Board;
 
-import com.project.pathfinder.board.entity.AcquirePropertyBoardEntity;
-import com.project.pathfinder.board.service.AcquirePropertyBoardService;
+import com.project.pathfinder.board.entity.Board.AcquirePropertyBoardEntity;
+import com.project.pathfinder.board.service.Board.AcquirePropertyBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,6 +65,21 @@ public class AcquirePropertyBoardController {
             return new ResponseEntity<>("게시글 삭제 성공", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("게시글 삭제 중 오류 발생", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<AcquirePropertyBoardEntity>> searchBoards(
+            @RequestParam(required = false) String classifiName,
+            @RequestParam(required = false) String acquireArea,
+            @RequestParam(required = false) String acquirePlace,
+            @RequestParam(required = false) LocalDate lostDate,
+            @RequestParam(required = false) String acquirePropertyName) {
+        try {
+            List<AcquirePropertyBoardEntity> boards = acquirePropertyBoardService.searchBoards(classifiName, acquireArea, acquirePlace, lostDate, acquirePropertyName);
+            return new ResponseEntity<>(boards, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 }
