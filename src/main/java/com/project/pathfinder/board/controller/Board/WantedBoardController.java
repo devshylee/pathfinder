@@ -1,13 +1,14 @@
-package com.project.pathfinder.board.controller;
+package com.project.pathfinder.board.controller.Board;
 
-import com.project.pathfinder.board.entity.LostPropertyBoardEntity;
-import com.project.pathfinder.board.entity.WantedBoardEntity;
-import com.project.pathfinder.board.service.WantedBoardService;
+import com.project.pathfinder.board.entity.Board.LostPetBoardEntity;
+import com.project.pathfinder.board.entity.Board.WantedBoardEntity;
+import com.project.pathfinder.board.service.Board.WantedBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,6 +72,22 @@ public class WantedBoardController {
             return new ResponseEntity<>("게시글 삭제 성공", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("게시글 삭제 중 오류 발생", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<WantedBoardEntity>> searchBoards(
+            @RequestParam(required = false) String classifiName,
+            @RequestParam(required = false) String lostArea,
+            @RequestParam(required = false) String lostPlace,
+            @RequestParam(required = false) LocalDate lostDate,
+            @RequestParam(required = false) String request_cost,
+            @RequestParam(required = false) String lostPropertyName) {
+        try {
+            List<WantedBoardEntity> boards = wantedBoardService.searchBoards(classifiName, lostArea, lostPlace, lostDate, request_cost, lostPropertyName);
+            return new ResponseEntity<>(boards, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 }

@@ -8,7 +8,9 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "members")
+@Table(name = "members", indexes = {
+        @Index(name = "idx_memberNickName", columnList = "memberNickName")
+})
 public class MemberEntity {
 
     @Id  // 올바른 패키지

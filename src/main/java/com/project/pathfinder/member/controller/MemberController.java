@@ -1,21 +1,18 @@
 package com.project.pathfinder.member.controller;
 
-import com.project.pathfinder.member.HttpResponse.DefaultRes;
-import com.project.pathfinder.member.HttpResponse.ResponseMessage;
-import com.project.pathfinder.member.HttpResponse.StatusCode;
 import com.project.pathfinder.member.dto.LoginRequest;
 import com.project.pathfinder.member.dto.MemberDTO;
 import com.project.pathfinder.member.entity.MemberEntity;
 import com.project.pathfinder.member.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Member;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -28,6 +25,13 @@ public class MemberController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // 에러 응답을 생성하는 메서드
+    private Map<String, String> createErrorResponse(String message) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", message);
+        return errorResponse;
+    }
+
     // 회원정보 전체 리스트 출력
     @GetMapping
     public List<MemberEntity> getAllMembers() {
@@ -38,54 +42,43 @@ public class MemberController {
     @GetMapping("/{id}")
     public ResponseEntity getMemberById(@PathVariable Long id) {
         if(!memberService.getMemberById(id).isPresent()) {
-            return new ResponseEntity(DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.MEMBER_READ_FAIL, null), HttpStatus.BAD_REQUEST);
+            return (ResponseEntity<?>) ResponseEntity.badRequest();
         }
-        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.MEMBER_READ_SUCCESS, memberService.getMemberById(id)), HttpStatus.OK);
+        return ResponseEntity.ok(id);
     }
 
     // ID에 해당하는 회원정보 수정
     @PutMapping("/{id}")
     public ResponseEntity updateMember(@PathVariable Long id, @RequestBody MemberDTO memberDTO) {
         if (!memberService.getMemberById(id).isPresent()) {
-            return new ResponseEntity(DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.MEMBER_UPDATE_FAIL, null), HttpStatus.BAD_REQUEST);
+            return (ResponseEntity<?>) ResponseEntity.badRequest();
         }
         memberDTO.setId(id);
         memberService.saveMember(memberDTO);
-        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.MEMBER_UPDATE_SUCCESS, memberDTO), HttpStatus.OK);
+        return ResponseEntity.ok(memberDTO);
     }
 
     // 회원가입
     @PostMapping
     public ResponseEntity<?> register(@RequestBody MemberDTO memberDTO) {
         try {
+            System.out.println("회원가입 컨트롤러 실행됨");
             // 1. 중복 아이디 체크
             if (memberService.getMemberByMemberId(memberDTO.getMemberId()).isPresent()) {
-                return new ResponseEntity<>(
-                        DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.MEMBER_POST_DUPLICATE, null),
-                        HttpStatus.BAD_REQUEST
-                );
+                return (ResponseEntity<?>) ResponseEntity.badRequest();
             }
 
             // 2. 필수 정보가 null인지 체크
             if (memberDTO.getMemberId() == null || memberDTO.getMemberPw() == null || memberDTO.getMemberNickName() == null) {
-                return new ResponseEntity(
-                        DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.MEMBER_POST_MISSING_INFO, null),
-                        HttpStatus.BAD_REQUEST
-                );
+                return (ResponseEntity<?>) ResponseEntity.badRequest();
             }
 
             // 3. 회원가입 로직 실행
             memberService.saveMember(memberDTO);
-            return new ResponseEntity<>(
-                    DefaultRes.res(StatusCode.OK, ResponseMessage.MEMBER_POST_SUCCESS, memberDTO),
-                    HttpStatus.OK
-            );
+            return ResponseEntity.ok(memberDTO);
         }catch (Exception e) {
-            System.out.println("ERROR!!! : " + e.getStackTrace()[0]);
-            return new ResponseEntity<>(
-                    DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.MEMBER_POST_FAIL, memberDTO),
-                    HttpStatus.BAD_REQUEST
-            );
+            System.out.println("ERROR!@#!@#!@#!@#!@#!@#@!@#@#!@#!@#!@#!@#!@#!@#!@#!@#!@#@!#!@#!@#@!#@!# : " + e.getMessage() );
+            return (ResponseEntity<?>) ResponseEntity.badRequest();
         }
     }
 
@@ -93,30 +86,35 @@ public class MemberController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMember(@PathVariable Long id, MemberDTO memberDTO) {
         if (!memberService.getMemberById(id).isPresent()) {
-            return new ResponseEntity(DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.MEMBER_DELETE_FAIL, null), HttpStatus.BAD_REQUEST);
+            return (ResponseEntity<Void>) ResponseEntity.badRequest();
         }
         memberService.deleteMember(id);
-        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.MEMBER_DELETE_SUCCESS, memberDTO), HttpStatus.OK);
+        return (ResponseEntity<Void>) ResponseEntity.ok();
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
+        try {
+            // 사용자 ID로 회원 정보 조회
+            Optional<MemberEntity> member = memberService.getMemberByMemberId(loginRequest.getMemberId());
 
-        // 사용자 ID로 회원 정보 조회
-        Optional<MemberEntity> member = memberService.getMemberByMemberId(loginRequest.getMemberId());
+            if (!member.isPresent()) {
+                return ResponseEntity.badRequest().body(createErrorResponse("이메일 혹은 비밀번호가 틀렸습니다.")); // 실패 응답
+            }
 
-        if (!member.isPresent()) {
-            return new ResponseEntity<>(DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.MEMBER_LOGIN_FAIL, null), HttpStatus.BAD_REQUEST);
-        }
-
-        // 비밀번호 비교
-        MemberEntity memberEntity = member.get();
-        if (passwordEncoder.matches(loginRequest.getMemberPw(), memberEntity.getMemberPw())) {
-            session.setAttribute("memberId", memberEntity.getMemberId());
-            session.setAttribute("memberPw", memberEntity.getMemberPw());
-            return new ResponseEntity<>(DefaultRes.res(StatusCode.OK, ResponseMessage.MEMBER_LOGIN_SUCCESS, memberEntity), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.MEMBER_LOGIN_FAIL, null), HttpStatus.BAD_REQUEST);
+            // 비밀번호 비교
+            MemberEntity memberEntity = member.get();
+            if (passwordEncoder.matches(loginRequest.getMemberPw(), memberEntity.getMemberPw())) {
+                session.setAttribute("memberId", memberEntity.getMemberId());
+                session.setAttribute("memberPw", memberEntity.getMemberPw());
+                return ResponseEntity.ok(memberEntity); // 로그인 성공 응답
+            } else {
+                return ResponseEntity.badRequest().body(createErrorResponse("이메일 혹은 비밀번호가 틀렸습니다.")); // 실패 응답
+            }
+        } catch (Exception e) {
+            // 예외 발생 시 JSON 형식의 에러 메시지 반환
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().body(createErrorResponse("서버 오류가 발생했습니다. 오류 메시지: " + e.getMessage()));
         }
     }
 
@@ -125,10 +123,10 @@ public class MemberController {
         // 세션에 로그인 정보가 있는지 확인
         if (session.getAttribute("memberId") != null) {
             session.invalidate();  // 세션 무효화
-            return new ResponseEntity<>(DefaultRes.res(StatusCode.OK, ResponseMessage.MEMBER_LOGOUT_SUCCESS, null), HttpStatus.OK);
+            return (ResponseEntity<?>) ResponseEntity.ok();
         } else {
             // 세션에 로그인 정보가 없을 경우
-            return new ResponseEntity<>(DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.MEMBER_LOGOUT_FAIL, null), HttpStatus.BAD_REQUEST);
+            return (ResponseEntity<?>) ResponseEntity.badRequest();
 
         }
     }
