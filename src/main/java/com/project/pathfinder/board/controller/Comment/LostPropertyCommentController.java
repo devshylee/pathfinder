@@ -1,5 +1,6 @@
 package com.project.pathfinder.board.controller.Comment;
 
+import com.project.pathfinder.board.entity.Comment.LostPetCommentEntity;
 import com.project.pathfinder.board.entity.Comment.LostPropertyCommentEntity;
 import com.project.pathfinder.board.service.Comment.LostPropertyCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,16 @@ public class LostPropertyCommentController {
 
     @Autowired
     private LostPropertyCommentService commentService;
+
+    @GetMapping
+    public ResponseEntity<List<LostPropertyCommentEntity>> getAllComments() {
+        try {
+            List<LostPropertyCommentEntity> comments = commentService.getAllComments();
+            return new ResponseEntity<>(comments, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
 
     // 댓글 생성
     @PostMapping

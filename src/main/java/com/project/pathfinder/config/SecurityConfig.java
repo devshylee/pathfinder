@@ -16,6 +16,11 @@ public class SecurityConfig {
                 .cors() // CORS 지원 활성화
                 .and()
                 .csrf().disable() // 테스트 목적으로 CSRF 비활성화
+                .headers(headers -> headers
+                        .contentSecurityPolicy("default-src 'self'; " +
+                                "img-src 'self' blob: data: https://dapi.kakao.com http://*.daumcdn.net; " +
+                                "connect-src 'self' http://43.203.203.157:8085")
+                )
                 .authorizeHttpRequests(authz -> authz
                         .anyRequest().permitAll() // 모든 요청 허용
                 );

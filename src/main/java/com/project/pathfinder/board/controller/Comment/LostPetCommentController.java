@@ -18,6 +18,16 @@ public class LostPetCommentController {
     @Autowired
     private LostPetCommentService commentService;
 
+    @GetMapping
+    public ResponseEntity<List<LostPetCommentEntity>> getAllComments() {
+        try {
+            List<LostPetCommentEntity> comments = commentService.getAllComments();
+            return new ResponseEntity<>(comments, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     // 댓글 생성
     @PostMapping
     public ResponseEntity<LostPetCommentEntity> createComment(@RequestBody LostPetCommentEntity comment) {

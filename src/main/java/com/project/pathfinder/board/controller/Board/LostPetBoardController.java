@@ -1,8 +1,11 @@
 package com.project.pathfinder.board.controller.Board;
 
+import com.project.pathfinder.board.entity.Board.AcquirePropertyBoardEntity;
 import com.project.pathfinder.board.entity.Board.LostPetBoardEntity;
 import com.project.pathfinder.board.entity.Board.LostPropertyBoardEntity;
 import com.project.pathfinder.board.service.Board.LostPetBoardService;
+import com.project.pathfinder.member.entity.MemberEntity;
+import com.project.pathfinder.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,9 @@ public class LostPetBoardController {
     @Autowired
     private LostPetBoardService lostPetBoardService;
 
+    @Autowired
+    private MemberService memberService;
+
     @GetMapping
     public ResponseEntity<?> getAllLostPetBoards() {
         try {
@@ -32,6 +38,17 @@ public class LostPetBoardController {
     @PostMapping
     public ResponseEntity<?> createLostPetBoard(@RequestBody LostPetBoardEntity board) {
         try {
+
+            // memberNickName을 이용해 MemberEntity 조회 또는 생성
+            Optional<MemberEntity> member = memberService.getMemberByMemberNickName(board.getMember().getMemberNickName());
+
+            if (member.isEmpty()) {
+                return new ResponseEntity<>("유효하지 않은 사용자", HttpStatus.BAD_REQUEST);
+            }
+
+            // MemberEntity를 AcquirePropertyBoardEntity에 설정
+            board.setMember(member.get());
+
             lostPetBoardService.saveLostPetBoard(board);
             return new ResponseEntity<>("반려동물 게시글 작성 성공", HttpStatus.OK);
         } catch (Exception e) {
@@ -66,6 +83,16 @@ public class LostPetBoardController {
             return new ResponseEntity<>("게시글 삭제 성공", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("게시글 삭제 중 오류 발생", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/recent")
+    public ResponseEntity<?> getRecentLostPetBoards() {
+        try{
+            List<LostPetBoardEntity> lostPetBoards = lostPetBoardService.getRecentPosts();
+            return new ResponseEntity<>(lostPetBoards, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("최근 게시물을 불러오는 중 에러 발생! /n [ERROR] : " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

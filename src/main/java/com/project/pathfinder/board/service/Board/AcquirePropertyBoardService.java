@@ -4,6 +4,8 @@ import com.project.pathfinder.board.entity.Board.AcquirePropertyBoardEntity;
 import com.project.pathfinder.board.entity.Board.LostPropertyBoardEntity;
 import com.project.pathfinder.board.repository.Board.AcquirePropertyBoardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -33,7 +35,8 @@ public class AcquirePropertyBoardService {
     }
 
     public List<AcquirePropertyBoardEntity> getRecentPosts() {
-        return acquirePropertyBoardRepository.findTop4ByOrderByCreateDateDesc();
+        Pageable topFour = PageRequest.of(0, 4);
+        return acquirePropertyBoardRepository.findTop4ByOrderByCreateDateDesc(topFour);
     }
 
     public List<AcquirePropertyBoardEntity> searchBoards(String classifiName, String acquireArea,

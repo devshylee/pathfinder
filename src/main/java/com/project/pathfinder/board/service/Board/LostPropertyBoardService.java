@@ -21,7 +21,7 @@ public class LostPropertyBoardService {
         return lostPropertyBoardRepository.findAll();
     }
 
-    public Optional<LostPropertyBoardEntity> getLostPetBoardById(Long id) {
+    public Optional<LostPropertyBoardEntity> getLostPropertyBoardById(Long id) {
         return lostPropertyBoardRepository.findById(id);
     }
 

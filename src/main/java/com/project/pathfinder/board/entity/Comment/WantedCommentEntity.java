@@ -25,7 +25,7 @@ public class WantedCommentEntity {
     private MemberEntity member;  // 댓글 작성자
 
     @ManyToOne
-    @JoinColumn(name = "id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "board_id", nullable = false)
     private WantedBoardEntity board;  // 댓글이 달린 게시글
 
     @NonNull

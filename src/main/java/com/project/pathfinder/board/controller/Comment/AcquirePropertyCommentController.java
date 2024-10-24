@@ -16,6 +16,16 @@ public class AcquirePropertyCommentController {
     @Autowired
     private AcquirePropertyCommentService commentService;
 
+    @GetMapping
+    public ResponseEntity<List<AcquirePropertyCommentEntity>> getAllComments() {
+        try {
+            List<AcquirePropertyCommentEntity> comments = commentService.getAllComments();
+            return new ResponseEntity<>(comments, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     // 댓글 생성
     @PostMapping
     public ResponseEntity<AcquirePropertyCommentEntity> createComment(@RequestBody AcquirePropertyCommentEntity comment) {

@@ -1,9 +1,12 @@
 package com.project.pathfinder.board.service.Board;
 
+import com.project.pathfinder.board.entity.Board.AcquirePropertyBoardEntity;
 import com.project.pathfinder.board.entity.Board.LostPetBoardEntity;
 import com.project.pathfinder.board.entity.Board.LostPropertyBoardEntity;
 import com.project.pathfinder.board.repository.Board.LostPetBoardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -33,7 +36,8 @@ public class LostPetBoardService {
     }
 
     public List<LostPetBoardEntity> getRecentPosts() {
-        return lostPetBoardRepository.findTop4ByOrderByCreateDateDesc();
+        Pageable topFour = PageRequest.of(0, 4);
+        return lostPetBoardRepository.findTop4ByOrderByCreateDateDesc(topFour);
     }
 
     public List<LostPetBoardEntity> searchBoards(String classifiName, String findArea,

@@ -30,7 +30,8 @@ public class AcquirePropertyBoardEntity {
     private String boardContent;
 
     @Lob
-    private String boardImage;
+    @Column(columnDefinition = "MEDIUMBLOB") // MEDIUMBLOB으로 지정
+    private byte[] boardImage;
 
     @CreationTimestamp
     private LocalDateTime createDate;

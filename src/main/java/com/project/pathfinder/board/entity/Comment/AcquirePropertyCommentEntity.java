@@ -25,7 +25,7 @@ public class AcquirePropertyCommentEntity {
     private MemberEntity member;  // 댓글 작성자
 
     @ManyToOne
-    @JoinColumn(name = "id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "board_id", nullable = false) // 수정: insertable과 updatable을 기본값(true)로 설정
     private AcquirePropertyBoardEntity board;  // 댓글이 달린 게시글
 
     @NonNull

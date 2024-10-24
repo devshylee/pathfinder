@@ -2,20 +2,29 @@ package com.project.pathfinder.board.repository.Board;
 
 import com.project.pathfinder.board.entity.Board.AcquirePropertyBoardEntity;
 import com.project.pathfinder.board.entity.Board.LostPropertyBoardEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface AcquirePropertyBoardRepository extends JpaRepository<AcquirePropertyBoardEntity, Long> {
 
     Optional<AcquirePropertyBoardEntity> findById(Long id);
 
     @Query("SELECT b FROM AcquirePropertyBoardEntity b ORDER BY b.createDate DESC")
-    List<AcquirePropertyBoardEntity> findTop4ByOrderByCreateDateDesc();
+    List<AcquirePropertyBoardEntity> findTop4ByOrderByCreateDateDesc(Pageable pageable);
+
+//    @Query("SELECT b FROM AcquirePropertyBoardEntity b WHERE b.boardTitle LIKE %:keyword%")
+//    List<AcquirePropertyBoardEntity> findByBoardTitleContaining(@Param("keyword") String keyword);
+
+    List<AcquirePropertyBoardEntity> findByBoardTitleContaining(String boardTitle);
+
 
     @Query("SELECT b FROM AcquirePropertyBoardEntity b WHERE " +
             "(:classifiName IS NULL OR b.classifiName = :classifiName) AND " +

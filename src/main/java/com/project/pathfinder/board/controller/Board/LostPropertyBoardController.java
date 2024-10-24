@@ -4,6 +4,7 @@ import com.project.pathfinder.board.entity.Board.LostPropertyBoardEntity;
 import com.project.pathfinder.board.service.Board.LostPropertyBoardService;
 import com.project.pathfinder.member.entity.MemberEntity;
 import com.project.pathfinder.member.repository.MemberRepository;
+import com.project.pathfinder.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class LostPropertyBoardController {
     private LostPropertyBoardService lostPropertyBoardService;
 
     @Autowired
-    private MemberRepository memberRepository;
+    private MemberService memberService;
 
     // 모든 게시물 가져오기
     @GetMapping
@@ -38,7 +39,7 @@ public class LostPropertyBoardController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getLostPropertyBoardById(@PathVariable Long id) {
         try {
-            Optional<LostPropertyBoardEntity> board = lostPropertyBoardService.getLostPetBoardById(id);
+            Optional<LostPropertyBoardEntity> board = lostPropertyBoardService.getLostPropertyBoardById(id);
             return new ResponseEntity<>(board, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("해당 게시글을 찾을 수 없습니다. /n [ERROR] : " + e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -47,18 +48,20 @@ public class LostPropertyBoardController {
 
     // 게시물 작성
     @PostMapping
-    public ResponseEntity<?> createLostPropertyBoard(@RequestBody LostPropertyBoardEntity lostPropertyBoardEntity) {
+    public ResponseEntity<?> createLostPropertyBoard(@RequestBody LostPropertyBoardEntity board) {
         try {
-            // memberNickName으로 MemberEntity 조회
-            String memberNickName = lostPropertyBoardEntity.getMember().getMemberNickName();
-            MemberEntity member = memberRepository.findByMemberNickName(memberNickName)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 닉네임을 가진 회원을 찾을 수 없습니다."));
+            // memberNickName을 이용해 MemberEntity 조회 또는 생성
+            Optional<MemberEntity> member = memberService.getMemberByMemberNickName(board.getMember().getMemberNickName());
 
-            // 조회된 MemberEntity를 LostPropertyBoardEntity에 설정
-            lostPropertyBoardEntity.setMember(member);
+            if (member.isEmpty()) {
+                return new ResponseEntity<>("유효하지 않은 사용자", HttpStatus.BAD_REQUEST);
+            }
+
+            // MemberEntity를 AcquirePropertyBoardEntity에 설정
+            board.setMember(member.get());
 
             // 분실물 게시글 저장
-            lostPropertyBoardService.saveLostPropertyBoard(lostPropertyBoardEntity);
+            lostPropertyBoardService.saveLostPropertyBoard(board);
 
             return new ResponseEntity<>("분실물 게시글 작성 성공", HttpStatus.OK);
         } catch (Exception e) {
