@@ -1,0 +1,146 @@
+:root {
+    --maincolor: #E4A656;
+    --subcolor: #FFF5E8;
+    --bordercolor: rgba(0, 0, 0, 0.1); 
+    --textcolor: #333;
+    --hovercolor: #D18A36;
+}
+
+body {
+    width: 100%;
+    height: 120vh;
+    font-family: 'Helvetica Neue', Arial, sans-serif; 
+    margin: 0 auto  ;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+input, button, a {
+    outline: none;
+    border: none;
+    text-decoration: none;
+}
+
+input {
+    border: none;
+    outline: none;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none; 
+    -moz-appearance: none; 
+    appearance: none; 
+}
+
+a {
+    color: var(--textcolor);
+    padding: 12px 16px; 
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: 600; 
+    transition: color 0.3s ease, background-color 0.3s ease;
+    border-radius: 8px;
+}
+
+a:hover {
+    color: #fff;
+}
+
+
+.PF_container {
+    width: 100%;
+    
+    max-width: 1280px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 12px; 
+    box-shadow: 0 2px 5px var(--bordercolor);
+    
+}
+
+
+.PF_main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 16px;
+}
+
+.PF_main > section {
+    background-color: #fff;
+    border: 1px solid var(--bordercolor);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 2px 5px var(--bordercolor);
+    transition: transform 0.2s ease, background-color 0.3s ease; 
+}
+
+.PF_main > section:hover {
+    background-color: rgba(255, 245, 232, 0.9);
+    transform: translateY(-5px); 
+}
+
+.img_group {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px; 
+    padding: 8px; 
+    border: 1px solid var(--bordercolor);
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.img_group > img {
+    height: 90px;
+    width: 90px;
+    object-fit: cover;
+    border-radius: 8px; 
+}
+
+.comment {
+    display: flex;
+    flex-direction: column;
+    font-size: 1rem;
+    font-weight: 500;
+    
+    transition: background-color 0.3s ease;
+}
+
+.comment-section{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+}
+.comment-form {
+    display: flex;
+
+    width: 70%;
+    flex-direction: column;
+    align-items: center;
+}
+.comment-input {
+    display: flex;
+
+    width: 70%;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+.board-info {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
