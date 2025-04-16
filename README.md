@@ -34,7 +34,7 @@
 ---
 
 ## 👩‍💻 기획 & 설계
-[아줌마 개발일지](https://yunamom.tistory.com)
+
 - [📄 기능 설명서](https://sly-grape-e30.notion.site/10611252aa9680f1b260e5b009581f2d)
 - [⚙ 기능 명세서](http://sly-grape-e30.notion.site/10611252aa96800cb9d5c98875b98858?pvs=74)
 - [☁ DB ERDCloud](https://www.erdcloud.com/d/26ggvtwpE5tjyn5D2)
@@ -42,7 +42,6 @@
 - [⌨ API 명세서](https://sly-grape-e30.notion.site/API-10611252aa9680fa836cc91eb3458b2e?pvs=74)
 - [💾 API 문서](https://sly-grape-e30.notion.site/API-10611252aa9680f4bb77cd3e37e801b7?pvs=74)
 - [🖥 페이지 기획서](https://www.figma.com/embed?embed_host=notion&url=https%3A%2F%2Fwww.figma.com%2Fdesign%2FUFaPGlMkod89eXuaj0VvGV%2FUntitled%3Fnode-id%3D0-1%26m%3Ddev%26t%3Da3DVGkoKB8wnGKmi-1)
-
 
 ---
 
